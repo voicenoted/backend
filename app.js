@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var searchRouter = require('./routes/search');
 var signinRouter = require('./routes/signin');
 var speechToTextRouter = require('./routes/speechToText');
 
@@ -22,7 +21,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/search', searchRouter);
 app.use('/signin', signinRouter);
 app.use('/speechToText', speechToTextRouter);
 
