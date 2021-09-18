@@ -13,7 +13,8 @@ router.get('/', async function(req, res, next) {
       podcasts {
         data {
           title,
-          description
+          description,
+          url
         }
       }
     }
