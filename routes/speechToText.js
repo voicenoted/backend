@@ -60,7 +60,7 @@ const speechToText = async (fileName) => {
   };
 
   const [response] = await speechClient.recognize(request);
-  const transcription = response.results.map(result => result.alternatives[0].transcript).join('\n');
+  const transcription = response.results.map(result => result.alternatives[0].transcript);
   return transcription;
 }
 
