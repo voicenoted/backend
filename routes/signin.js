@@ -10,16 +10,13 @@ admin.initializeApp({
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
-
-  console.log("asdfahsdufaij")
-
   const auth = admin.auth();
 
   auth
     .createUser({
-      uid: 'some-uid',
-      email: 'user@example.com',
-      phoneNumber: '+11234567890',
+      email: req.body.email,
+      password: req.body.password,
+      displayName: req.body.name
     })
     .then((userRecord) => {
       // See the UserRecord reference doc for the contents of userRecord.
