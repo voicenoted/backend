@@ -1,55 +1,94 @@
 var express = require('express');
 var router = express.Router();
 const Multer = require('multer');
+const ffmpeg = require('ffmpeg');
 
 const { Storage } = require('@google-cloud/storage');
-const speech = require('@google-cloud/speech');
+const { SpeechClient } = require('@google-cloud/speech');
+
+const bucketName = 'voicenoted-speech-to-text';
+const uploadDir = './uploads';
 
 const storage = new Storage();
-const multer = Multer({ storage: Multer.memoryStorage() });
-const bucket = storage.bucket('voicenoted-speech-to-text');
-const speechClient = new speech.SpeechClient();
+const speechClient = new SpeechClient();
 
-async function getTranscription() {
+const multer = Multer({
+  storage: Multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, callback) => {
+      callback(null, Date.now() + '.flac')
+    }
+  })
+});
 
-  const audio = {
-    uri: 'gs://voicenoted-speech-to-text/audio.flac',
-  };
-  const config = {
-    encoding: 'FLAC',
-    // sampleRateHertz: 16000,
-    languageCode: 'en-US',
-  };
+const cropAudio = async (fileName, startTime, endTime) => {
+
+  const croppedFileName = 'tmp_' + fileName;
+
+  return new Promise((resolve, reject) => {
+    try {
+      var process = new ffmpeg(`${uploadDir}/${fileName}`);
+      process.then((file) => {
+        file
+        .setVideoStartTime(startTime)
+        .setVideoDuration(endTime - startTime)
+        .save(`${uploadDir}/${croppedFileName}`, (error, file) => {
+          if (error) {
+            reject({ result: error });
+          }
+          resolve(croppedFileName);
+        });
+      }, (err) => {
+        reject({ result: err });
+      });
+    } catch (err) {
+      reject({ result: err.msg });
+    }
+  });
+}
+
+const speechToText = async (fileName) => {
+
   const request = {
-    audio: audio,
-    config: config,
+    audio: {
+      uri: `gs://${bucketName}/${fileName}`,
+    },
+    config: {
+      encoding: 'FLAC',
+      languageCode: 'en-US',
+    },
   };
 
-  // Detects speech in the audio file
   const [response] = await speechClient.recognize(request);
   const transcription = response.results.map(result => result.alternatives[0].transcript).join('\n');
   return transcription;
 }
 
-router.post('/', multer.single('file'), async function(req, res, next) {
+router.post('/', multer.single('file'), async (req, res, next) => {
 
-  if (!req.file) {
-    res.status(400).send('No file uploaded.');
+  if (!req.file || !req.body) {
+    res.status(400).json({ result: 'No file uploaded.' });
     return;
   }
 
-  const blob = bucket.file(req.file.originalname);
-  const blobStream = blob.createWriteStream();
+  const fileName = req.file.filename;
+  const { startTime, endTime } = req.body;
 
-  blobStream.on('error', err => {
-    next(err);
+  if (!startTime || !endTime) {
+    res.status(400).json({ result: 'Missing start time and/or end time.' });
+    return;
+  }
+
+  await cropAudio(fileName, startTime, endTime).then(async (croppedFileName) => {
+
+    await storage.bucket(bucketName).upload(`${uploadDir}/${croppedFileName}`, {
+      destination: fileName
+    });
+    res.status(200).json({ result: await speechToText(fileName) });
+
+  }).catch(err => {
+    res.status(400).json(err);
   });
-
-  blobStream.on('finish', async () => {
-    res.status(200).send(await getTranscription());
-  });
-
-  blobStream.end(req.file.buffer);
 });
 
 module.exports = router;
