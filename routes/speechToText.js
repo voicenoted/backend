@@ -64,6 +64,12 @@ const speechToText = async (fileName) => {
   return transcription;
 }
 
+router.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 router.post('/', multer.single('file'), async (req, res, next) => {
 
   if (!req.file || !req.body) {

@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 var { db } = require('../firebase.js');
 
+router.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 /* GET notes by user and audioid. */
 router.get('/', async function(req, res, next) {
   if (!req.header.token) {
