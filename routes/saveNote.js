@@ -25,6 +25,14 @@ router.post('/', async function(req, res, next) {
     return;
   }
 
+  if (!req.body.audioid) {
+    res.status(400).json({
+      message: "Empty audioid."
+    });
+    return;
+  }
+
+
   admin
     .auth()
     .verifyIdToken(idToken)

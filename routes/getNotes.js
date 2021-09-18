@@ -25,8 +25,8 @@ router.get('/', async function(req, res, next) {
       const uid = decodedToken.uid;
 
       // temp
-      let uid = 1093458
-      req.body.audioid = 2
+      // let uid = 1093458
+      // req.body.audioid = 2
       // get notes
       db.collection("notes").where("uid", "==", uid, "&&").where("audioid", "==", req.body.audioid)
         .get()
