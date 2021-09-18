@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var searchRouter = require('./routes/search');
 var signinRouter = require('./routes/signin');
+var speechToTextRouter = require('./routes/speechToText');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/search', searchRouter);
 app.use('/signin', signinRouter);
+app.use('/speechToText', speechToTextRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
