@@ -10,12 +10,12 @@ router.use(function(req, res, next) {
 
 /* POST new note. */
 router.post('/', async function(req, res, next) {
-  if (req.body.token === undefined) {
-    res.status(401).json({
-      message: "Access token required."
-    });
-    return;
-  }
+  // if (req.body.token === undefined) {
+  //   res.status(401).json({
+  //     message: "Access token required."
+  //   });
+  //   return;
+  // }
 
   if (req.body.timestamp === undefined) {
     res.status(400).json({
@@ -39,19 +39,14 @@ router.post('/', async function(req, res, next) {
   }
 
 
-  auth
-    .verifyIdToken(req.body.token)
-    .then((decodedToken) => {
-      const uid = decodedToken.uid;
+  // auth
+  //   .verifyIdToken(req.body.token)
+  //   .then((decodedToken) => {
+  //     const uid = decodedToken.uid;
       // store note in firebase
 
-      // temp
-      // let uid = 1093458
-      // req.body.timestamp = {
-      //   start: 0,
-      //   end: 5543
-      // }
-      // req.body.content = "cool content"
+      // temp for demo :)
+      let uid = 123;
 
       db.collection("notes").add({
         uid: uid,
@@ -76,13 +71,13 @@ router.post('/', async function(req, res, next) {
           message: error
         });
       });
-    })
-    .catch((error) => {
-      res.status(401).json({
-        message: "Not authorized."
-      });
-      return;
-    });
+    // })
+    // .catch((error) => {
+    //   res.status(401).json({
+    //     message: "Not authorized."
+    //   });
+    //   return;
+    // });
 });
 
 module.exports = router;

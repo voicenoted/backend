@@ -10,12 +10,12 @@ router.use(function(req, res, next) {
 
 /* GET notes by user and audioid. */
 router.get('/', async function(req, res, next) {
-  if (req.body.token === undefined) {
-    res.status(401).json({
-      message: "Access token required."
-    });
-    return;
-  }
+  // if (req.body.token === undefined) {
+  //   res.status(401).json({
+  //     message: "Access token required."
+  //   });
+  //   return;
+  // }
 
   if (req.body.audioid === undefined) {
     res.status(401).json({
@@ -24,16 +24,14 @@ router.get('/', async function(req, res, next) {
     return;
   }
 
-  admin
-    .auth()
-    .verifyIdToken(req.body.token)
-    .then((decodedToken) => {
-      const uid = decodedToken.uid;
+  // admin
+  //   .auth()
+  //   .verifyIdToken(req.body.token)
+  //   .then((decodedToken) => {
+  //     const uid = decodedToken.uid;
 
-      // temp
-      // let uid = 1093458
-      // req.body.audioid = 2
-      // get notes
+      // temp for demo :)
+      let uid = 123;
       db.collection("notes").where("uid", "==", uid, "&&").where("audioid", "==", req.body.audioid)
         .get()
         .then((querySnapshot) => {
@@ -49,13 +47,13 @@ router.get('/', async function(req, res, next) {
               message: error
             });
         });
-    })
-    .catch((error) => {
-      res.status(401).json({
-        message: "Not authorized."
-      });
-      return;
-    });
+    // })
+    // .catch((error) => {
+    //   res.status(401).json({
+    //     message: "Not authorized."
+    //   });
+    //   return;
+    // });
 });
 
 module.exports = router;
