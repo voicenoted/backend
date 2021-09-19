@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { db } = require('../firebase.js');
+var { db, auth } = require('../firebase.js');
 
 router.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -10,28 +10,28 @@ router.use(function(req, res, next) {
 
 /* POST new note. */
 router.post('/', async function(req, res, next) {
-  if (!req.body.token) {
+  if (req.body.token === undefined) {
     res.status(401).json({
       message: "Access token required."
     });
     return;
   }
 
-  if (!req.body.timestamp) {
+  if (req.body.timestamp === undefined) {
     res.status(400).json({
       message: "Empty timestamp."
     });
     return;
   }
 
-  if (!req.body.timestamp.start) {
+  if (req.body.timestamp.start === undefined) {
     res.status(400).json({
       message: "Empty timestamp start."
     });
     return;
   }
 
-  if (!req.body.audioid) {
+  if (req.body.audioid === undefined) {
     res.status(400).json({
       message: "Empty audioid."
     });
@@ -39,8 +39,7 @@ router.post('/', async function(req, res, next) {
   }
 
 
-  admin
-    .auth()
+  auth
     .verifyIdToken(req.body.token)
     .then((decodedToken) => {
       const uid = decodedToken.uid;
