@@ -31,8 +31,8 @@ router.get('/', async function(req, res, next) {
   //     const uid = decodedToken.uid;
 
       // temp for demo :)
-      let uid = 123;
-      db.collection("notes").where("uid", "==", uid, "&&").where("audioid", "==", req.query.audioid)
+      let uid = "123";
+      db.collection("notes").where("uid", "==", parseInt(uid), "&&").where("audioid", "==", parseInt(req.query.audioid))
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -47,13 +47,6 @@ router.get('/', async function(req, res, next) {
               message: error
             });
         });
-    // })
-    // .catch((error) => {
-    //   res.status(401).json({
-    //     message: "Not authorized."
-    //   });
-    //   return;
-    // });
 });
 
 module.exports = router;
