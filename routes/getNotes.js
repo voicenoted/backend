@@ -10,7 +10,7 @@ router.use(function(req, res, next) {
 
 /* GET notes by user and audioid. */
 router.get('/', async function(req, res, next) {
-  if (!req.header.token) {
+  if (!req.body.token) {
     res.status(401).json({
       message: "Access token required."
     });
@@ -26,7 +26,7 @@ router.get('/', async function(req, res, next) {
 
   admin
     .auth()
-    .verifyIdToken(idToken)
+    .verifyIdToken(req.body.token)
     .then((decodedToken) => {
       const uid = decodedToken.uid;
 
