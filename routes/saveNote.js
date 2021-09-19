@@ -55,7 +55,7 @@ router.post('/', async function(req, res, next) {
       // temp for demo :)
       let uid = 123;
 
-      db.collection("notes").add({
+      let note = {
         uid: uid,
         audioid: req.body.audioid,
         timestamp: {
@@ -64,13 +64,15 @@ router.post('/', async function(req, res, next) {
         },
         content: req.body.content,
         audioLink: req.body.audioLink
-      })
+      }
+
+      db.collection("notes").add(note)
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
 
-        res.status(200).json({
-          docID: docRef.id
-        });
+        note.id = docRef.id
+
+        res.status(200).json(note);
       })
       .catch((error) => {
         console.error("Error adding document: ", error);

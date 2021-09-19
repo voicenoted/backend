@@ -9,6 +9,7 @@ var signupRouter = require('./routes/signup');
 var speechToTextRouter = require('./routes/speechToText');
 var saveNoteRouter = require('./routes/saveNote');
 var getNotesRouter = require('./routes/getNotes');
+var updateNoteRouter = require('./routes/updateNote');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use('/signup', signupRouter);
 app.use('/speechToText', speechToTextRouter);
 app.use('/saveNote', saveNoteRouter);
 app.use('/getNotes', getNotesRouter);
+app.use('/updateNote', updateNoteRouter);
 
 app.use('/_createToken', require('./routes/_createToken'));
 
