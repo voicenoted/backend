@@ -38,7 +38,7 @@ router.get('/', async function(req, res, next) {
             querySnapshot.forEach((doc) => {
               console.log(doc.id, " => ", doc.data());
             });
-            res.end(JSON.stringify(querySnapshot.docs.map(doc => doc.data())))
+            res.status(200).json(querySnapshot.docs.map(doc => doc.data()));
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
