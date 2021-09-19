@@ -64,9 +64,17 @@ router.post('/', async function(req, res, next) {
       })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
+
+        res.status(200).json({
+          docID: docRef.id
+        });
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
+
+        res.status(500).json({
+          message: error
+        });
       });
     })
     .catch((error) => {
