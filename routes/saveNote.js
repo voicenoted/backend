@@ -38,6 +38,13 @@ router.post('/', async function(req, res, next) {
     return;
   }
 
+  if (req.body.audioLink === undefined) {
+    res.status(400).json({
+      message: "Empty audioLink."
+    });
+    return;
+  }
+
 
   // auth
   //   .verifyIdToken(req.body.token)
@@ -55,7 +62,8 @@ router.post('/', async function(req, res, next) {
           start: req.body.timestamp.start,
           end: req.body.timestamp.end
         },
-        content: req.body.content
+        content: req.body.content,
+        audioLink: req.body.audioLink
       })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
