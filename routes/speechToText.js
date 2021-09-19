@@ -87,10 +87,11 @@ router.post('/', multer.single('file'), async (req, res, next) => {
 
   await cropAudio(fileName, startTime, endTime).then(async (croppedFileName) => {
 
-    await storage.bucket(bucketName).upload(`${uploadDir}/${croppedFileName}`, {
+    let bucketRes = await storage.bucket(bucketName).upload(`${uploadDir}/${croppedFileName}`, {
       destination: fileName
     });
-    res.status(200).json({ result: await speechToText(fileName) });
+
+    res.status(200).json({ text: await speechToText(fileName), audioLink: bucketRes[1].mediaLink });
 
   }).catch(err => {
     res.status(400).json(err);
