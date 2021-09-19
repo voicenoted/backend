@@ -28,6 +28,8 @@ app.use('/speechToText', speechToTextRouter);
 app.use('/saveNote', saveNoteRouter);
 app.use('/getNotes', getNotesRouter);
 
+app.use('/_createToken', require('./routes/_createToken'));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
