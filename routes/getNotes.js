@@ -17,7 +17,7 @@ router.get('/', async function(req, res, next) {
   //   return;
   // }
 
-  if (req.body.audioid === undefined) {
+  if (req.query.audioid === undefined) {
     res.status(401).json({
       message: "Undefined audioid."
     });
@@ -32,7 +32,7 @@ router.get('/', async function(req, res, next) {
 
       // temp for demo :)
       let uid = 123;
-      db.collection("notes").where("uid", "==", uid, "&&").where("audioid", "==", req.body.audioid)
+      db.collection("notes").where("uid", "==", uid, "&&").where("audioid", "==", req.query.audioid)
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
